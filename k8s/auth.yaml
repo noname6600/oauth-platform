@@ -58,7 +58,7 @@ spec:
 
             # CORS
             - name: CORS_ORIGINS
-              value: "http://basicauth.nani.id.vn, http://localhost:5173"
+              value: "http://basicauth.nani.id.vn"
             - name: CORS_METHODS
               value: "*"
             - name: CORS_HEADERS
