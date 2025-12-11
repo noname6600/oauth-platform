@@ -3,6 +3,8 @@ package com.learn.test.service.impl;
 import com.learn.test.dto.UserInfo;
 import com.learn.test.entity.User;
 import com.learn.test.enumerate.LoginType;
+import com.learn.test.exception.ConflictException;
+import com.learn.test.exception.ResourceNotFoundException;
 import com.learn.test.repository.UserRepository;
 import com.learn.test.service.IUserService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ public class UserService implements IUserService {
 
     @Override
     public User createUser(String name) {
+        userRepository.findByEmail(name).orElseThrow(()-> new ConflictException("This email already exist"));
         User user = User.builder()
                 .name(name)
                 .email(name)
