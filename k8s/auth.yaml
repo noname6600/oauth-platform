@@ -18,6 +18,9 @@ spec:
           ports:
             - containerPort: 8081
           env:
+	    # PORT
+            - name: PORT
+              value: "8081"
 
             # DATABASE
             - name: MASTER_DATABASE_URL
