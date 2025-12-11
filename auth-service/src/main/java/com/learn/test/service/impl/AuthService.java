@@ -63,7 +63,9 @@ public class AuthService implements IAuthService {
         }
         temporaryCodeService.delete(code);
 
-        User user = userService.findByEmail(email)
+        String googleEmail = "google:" + email.trim().toLowerCase();
+
+        User user = userService.findByEmail(googleEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         String token = jwtService.generateToken(user);
