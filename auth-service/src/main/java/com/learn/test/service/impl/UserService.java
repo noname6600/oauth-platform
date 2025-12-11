@@ -20,7 +20,9 @@ public class UserService implements IUserService {
 
     @Override
     public User createUser(String name) {
-        userRepository.findByEmail(name).orElseThrow(()-> new ConflictException("This email already exist"));
+        userRepository.findByEmail(name).ifPresent(u -> {
+            throw new ConflictException("This email already exists");
+        });
         User user = User.builder()
                 .name(name)
                 .email(name)
@@ -58,11 +60,13 @@ public class UserService implements IUserService {
 
     @Override
     public User findOrCreateOAuthUser(String email, String name) {
-        return userRepository.findByEmail(email)
+        String googleEmail = "google:" + email.trim().toLowerCase();
+
+        return userRepository.findByEmail(googleEmail)
                 .orElseGet(() -> userRepository.save(
                         User.builder()
-                                .email(email)
-                                .name(name != null ? name : email)
+                                .email(googleEmail)
+                                .name(name != null ? name.trim() : email.trim())
                                 .loginType(LoginType.GOOGLE)
                                 .build()
                 ));
