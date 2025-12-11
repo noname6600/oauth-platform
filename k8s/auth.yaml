@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oauth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oauth-service
+  template:
+    metadata:
+      labels:
+        app: oauth-service
+    spec:
+      containers:
+        - name: oauth-service
+          image: kieger/oauth-service:latest
+          ports:
+            - containerPort: 8081
+          env:
+
+            # DATABASE
+            - name: MASTER_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: oauth-secret
+                  key: MASTER_DATABASE_URL
+            - name: MASTER_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: oauth-secret
+                  key: MASTER_DATABASE_USER
+            - name: MASTER_DATABASE_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: oauth-secret
+                  key: MASTER_DATABASE_PWD
+
+            # EMAIL
+            - name: MAIL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: oauth-secret
+                  key: MAIL_USER
+            - name: MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: oauth-secret
+                  key: MAIL_PASSWORD
+            - name: MAIL_HOST
+              value: "smtp.gmail.com"
+            - name: MAIL_PORT
+              value: "587"
+
+            # FRONTEND RESET PASSWORD
+            - name: RESET_LINK
+              value: "http://basicauth.nani.id.vn"
+
+            # CORS
+            - name: CORS_ORIGINS
+              value: "http://basicauth.nani.id.vn, http://localhost:5173"
+            - name: CORS_METHODS
+              value: "*"
+            - name: CORS_HEADERS
+              value: "*"
+
+            # GOOGLE OAUTH
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: oauth-secret
+                  key: GOOGLE_CLIENT_ID
+            - name: GOOGLE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: oauth-secret
+                  key: GOOGLE_CLIENT_SECRET
+
+            # JWT
+            - name: KEY_ROTATION_MS
+              value: "120000"
+            - name: JWT_EXPIRATION_MS
+              value: "180000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: oauth-service
+spec:
+  selector:
+    app: oauth-service
+  ports:
+    - port: 8081
+      targetPort: 8081
