@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: oauth-service-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: traefik    
 spec:
   rules:
     - host: api.jwtauth.nani.id.vn
@@ -15,4 +15,4 @@ spec:
               service:
                 name: oauth-service
                 port:
-                  number: 8081
+                  number: 8081  
