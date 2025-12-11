@@ -57,9 +57,6 @@ export default function Profile() {
     navigate("/login");
   };
 
-  const goToOrders = () => {
-    navigate("/orders");
-  };
 
   return (
     <div className="profile-container">
