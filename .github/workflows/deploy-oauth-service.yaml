@@ -17,6 +17,7 @@ jobs:
       # -------------------------
       - name: Set up K8s config
         run: |
+          mkdir -p ~/.kube
           echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ~/.kube/config
 
       # -------------------------
